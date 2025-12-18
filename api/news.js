@@ -1,15 +1,7 @@
 // api/news.js
 
 export default async function handler(req, res) {
-  // CORS preflight
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', 'https://newsbox-ijp…projects.vercel.app'); // your exact URL
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    return res.status(200).end();
-  }
-
-  const { country = 'in', category = 'general', lang = 'en', max = '20', q = '' } = req.query;
+  const { country = 'in', category = 'general', lang = 'en', max = '20', q = '' } = req.query || {};
 
   const url = new URL('https://gnews.io/api/v4/top-headlines');
   url.searchParams.set('country', String(country));
@@ -22,7 +14,7 @@ export default async function handler(req, res) {
   try {
     const gnewsRes = await fetch(url.toString());
     const data = await gnewsRes.json();
-    res.setHeader('Access-Control-Allow-Origin', '*'); // ok because only your frontend calls this
+    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(gnewsRes.status).json(data);
   } catch (e) {
     res.setHeader('Access-Control-Allow-Origin', '*');
