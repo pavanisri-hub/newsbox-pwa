@@ -1,12 +1,15 @@
-const API_KEY = import.meta.env.VITE_GNEWS_API_KEY
-const BASE_URL = 'https://gnews.io/api/v4'
+// src/lib/newsApi.js
 
-export async function fetchTopHeadlines() {
-  const url = `${BASE_URL}/top-headlines?country=in&category=general&lang=en&max=20&apikey=${API_KEY}`
+const API_BASE =
+  import.meta.env.VITE_API_BASE || 'http://localhost:4173';
 
-  const res = await fetch(url)
-  if (!res.ok) throw new Error('Failed to load news')
+export async function fetchTopHeadlines(params) {
+  const query = params?.toString?.() ?? '';
+  const url = `${API_BASE}/api/news${query ? `?${query}` : ''}`;
 
-  const data = await res.json()
-  return data.articles || []
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to load news');
+
+  const data = await res.json();
+  return data.articles || [];
 }
